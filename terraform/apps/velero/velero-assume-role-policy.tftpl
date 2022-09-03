@@ -1,0 +1,17 @@
+${jsonencode({
+  "Version": "2012-10-17",
+  "Statement": [
+      {
+          "Effect": "Allow",
+          "Action": "sts:AssumeRoleWithWebIdentity",
+          "Principal": {
+              "Federated": "${identity_provider_arn}"
+          },
+          "Condition": {
+              "StringEquals": {
+                  "s3-${aws_region}.amazonaws.com/${identity_provider_bucket}:sub": "system:serviceaccount:${velero_namespace}:${velero_service_account}"
+              }
+          }
+      }
+  ]
+})}

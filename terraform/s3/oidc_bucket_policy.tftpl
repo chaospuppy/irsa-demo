@@ -1,0 +1,22 @@
+${jsonencode({
+  "Statement": {
+    "Effect": "Allow",
+    "Action": [
+      "s3:GetObject",
+      "s3:ListBucket"
+    ],
+    "Condition": {
+      "StringEquals": {
+        "aws:SourceAccount": "${account_id}"
+      }
+    },
+    "Principal":{
+      "Service": "sts.amazonaws.com"
+    },
+    "Resource":[
+      "${bucket_arn}",
+      "${bucket_arn}/*"
+    ]
+  },
+  "Version":"2012-10-17"
+})}

@@ -1,0 +1,19 @@
+{
+  "name": "gitea-helm-chart",
+  "homepage": "https://gitea.com/gitea/helm-chart.git",
+  "license": "MIT",
+  "private": true,
+  "engineStrict": true,
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "scripts": {
+    "readme:lint": "markdownlint *.md -f",
+    "readme:parameters": "readme-generator -v values.yaml -r README.md"
+  },
+  "devDependencies": {
+    "markdownlint-cli": "^0.31.1",
+    "readme-generator-for-helm": "https://github.com/bitnami-labs/readme-generator-for-helm/tarball/main"
+  }
+}
