@@ -4,6 +4,11 @@ variable "tags" {
   default     = {}
 }
 
+variable "cluster_name" {
+  type        = string
+  description = "Name of cluster being created"
+}
+
 variable "aws_region" {
   type        = string
   description = "AWS region"

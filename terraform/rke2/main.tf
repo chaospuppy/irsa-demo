@@ -28,36 +28,6 @@ data "aws_ami" "rhel8" {
   }
 }
 
-data "aws_ami" "centos7" {
-  most_recent = true
-  owners      = ["345084742485"] # owner is specific to aws gov cloud
-
-  filter {
-    name   = "name"
-    values = ["CentOS Linux 7 x86_64 HVM EBS*"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-}
-
-data "aws_ami" "centos8" {
-  most_recent = true
-  owners      = ["345084742485"] # owner is specific to aws gov cloud
-
-  filter {
-    name   = "name"
-    values = ["CentOS Linux 8 x86_64 HVM EBS*"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-}
-
 # Key Pair
 resource "tls_private_key" "ssh" {
   algorithm = "RSA"
@@ -74,7 +44,7 @@ resource "local_file" "ssh_pem" {
 # Server
 #
 module "rke2" {
-  source = "../../vendor/rke2"
+  source = "../vendor/rke2"
 
   cluster_name        = var.cluster_name
   vpc_id              = var.vpc_id
@@ -100,7 +70,7 @@ EOT
 # Generic agent pool
 #
 module "agents" {
-  source = "../../vendor/rke2/modules/agent-nodepool"
+  source = "../vendor/rke2/modules/agent-nodepool"
 
   name    = "generic"
   vpc_id  = var.vpc_id

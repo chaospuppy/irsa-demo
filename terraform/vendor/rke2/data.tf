@@ -1,17 +1,18 @@
-module "init" {
-  source = "./modules/userdata"
-
-  server_url    = module.cp_lb.dns
-  token_bucket  = module.statestore.bucket
-  token_object  = module.statestore.token_object
-  config        = var.rke2_config
-  pre_userdata  = var.pre_userdata
-  post_userdata = var.post_userdata
-  ccm           = var.enable_ccm
-  agent         = false
+locals {
+  init_script_vars = {
+    type          = "server"
+    server_url    = module.cp_lb.dns
+    token_bucket  = module.statestore.bucket
+    token_object  = module.statestore.token_object
+    config        = var.rke2_config
+    pre_userdata  = var.pre_userdata
+    post_userdata = var.post_userdata
+    ccm           = var.enable_ccm
+    agent         = false
+  }
 }
 
-data "template_cloudinit_config" "this" {
+data "cloudinit_config" "this" {
   gzip          = true
   base64_encode = true
 
@@ -40,7 +41,7 @@ data "template_cloudinit_config" "this" {
   part {
     filename     = "01_rke2.sh"
     content_type = "text/x-shellscript"
-    content      = module.init.templated
+    content      = templatefile("${path.module}/modules/userdata/rke2-init.sh.tftpl", local.init_script_vars)
   }
 }
 

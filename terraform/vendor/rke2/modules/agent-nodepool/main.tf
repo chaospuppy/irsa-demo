@@ -56,20 +56,21 @@ resource "aws_iam_role_policy" "get_token" {
 #
 # RKE2 Userdata
 #
-module "init" {
-  source = "../userdata"
-
-  server_url    = var.cluster_data.server_url
-  token_bucket  = var.cluster_data.token.bucket
-  token_object  = var.cluster_data.token.object
-  config        = var.rke2_config
-  pre_userdata  = var.pre_userdata
-  post_userdata = var.post_userdata
-  ccm           = var.enable_ccm
-  agent         = true
+locals {
+  init_script_vars = {
+    type          = "agent"
+    server_url    = var.cluster_data.server_url
+    token_bucket  = var.cluster_data.token.bucket
+    token_object  = var.cluster_data.token.object
+    config        = var.rke2_config
+    pre_userdata  = var.pre_userdata
+    post_userdata = var.post_userdata
+    ccm           = var.enable_ccm
+    agent         = true
+  }
 }
 
-data "template_cloudinit_config" "init" {
+data "cloudinit_config" "init" {
   gzip          = true
   base64_encode = true
 
@@ -98,7 +99,7 @@ data "template_cloudinit_config" "init" {
   part {
     filename     = "01_rke2.sh"
     content_type = "text/x-shellscript"
-    content      = module.init.templated
+    content      = templatefile("${path.module}/..//userdata/rke2-init.sh.tftpl", local.init_script_vars)
   }
 }
 
@@ -116,7 +117,7 @@ module "nodepool" {
   block_device_mappings       = var.block_device_mappings
   extra_block_device_mappings = var.extra_block_device_mappings
   vpc_security_group_ids      = concat([var.cluster_data.cluster_sg], var.extra_security_group_ids)
-  userdata                    = data.template_cloudinit_config.init.rendered
+  userdata                    = data.cloudinit_config.init.rendered
   iam_instance_profile        = var.iam_instance_profile == "" ? module.iam[0].iam_instance_profile : var.iam_instance_profile
   asg                         = var.asg
   spot                        = var.spot
