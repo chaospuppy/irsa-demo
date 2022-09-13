@@ -72,6 +72,12 @@ upgradeCRDs: true
 # Using this on production systems, especially those that have multiple releases of Velero, will be destructive.
 cleanUpCRDs: false
 
+# Information about the Kubernetes service account Velero uses.
+serviceAccount:
+  server:
+    create: true
+    name: velero
+
 ##
 ## End of deployment-related settings.
 ##
@@ -124,19 +130,6 @@ configuration:
   #    snapshotLocation:
   #    project:
 
-# Information about the Kubernetes service account Velero uses.
-serviceAccount:
-  server:
-    create: true
-    name: velero
-    annotations:
-      aws-pod-identity.ironbank.dso.mil/role-arn: "arn:aws-us-gov:iam::341294496617:role/irsa-demo-velero"
-      aws-pod-identity.ironbank.dso.mil/audience: "irsa.demo"
-      # optional: Defaults to 86400 for expirationSeconds if not set
-      aws-pod-identity.ironbank.dso.mil/token-expiration: "86400"
-
-    labels:
-
 # Whether to create backupstoragelocation crd, if false => do not create a default backup location
 backupsEnabled: true
 # Whether to create volumesnapshotlocation crd, if false => disable snapshot feature
@@ -144,20 +137,21 @@ snapshotsEnabled: true
 
 # Backup schedules to create.
 # Eg:
-# schedules:
-#   mybackup:
-#     disabled: false
-#     labels:
-#       myenv: foo
-#     annotations:
-#       myenv: foo
-#     schedule: "0 0 * * *"
-#     useOwnerReferencesInBackup: false
-#     template:
-#       ttl: "240h"
-#       includedNamespaces:
-#       - foo
-schedules: {}
+schedules:
+  gitea:
+    disabled: false
+    labels:
+      app: gitea
+    annotations:
+      app: gitea
+    schedule: "0 0 * * *"
+    useOwnerReferencesInBackup: false
+    template:
+      ttl: "240h"
+      includedNamespaces:
+      - gitea
+      includedResources:
+      - PersistentVolumeClaim
 
 # Velero ConfigMaps.
 # Eg:

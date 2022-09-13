@@ -1,0 +1,9 @@
+
+# Information about the Kubernetes service account Velero uses.
+serviceAccount:
+  server:
+    annotations:
+      aws-pod-identity.irsa.demo/role-arn: "arn:aws-us-gov:iam::763659020100:role/irsa-demo-velero"
+      aws-pod-identity.irsa.demo/audience: "irsa.demo"
+      # optional: Defaults to 86400 for expirationSeconds if not set
+      aws-pod-identity.irsa.demo/token-expiration: "86400"

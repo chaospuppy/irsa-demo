@@ -24,3 +24,9 @@ variable "subnet_ids" {
   type        = set(string)
   description = "subnets into which RKE2 will be deployed"
 }
+
+variable "vpc_cidr" {
+  type        = string
+  description = "CIDR block of VPC"
+  default     = "172.23.0.0/16"
+}

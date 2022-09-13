@@ -1,4 +1,4 @@
-namespace: cert-manager
+namespace: pod-identity-webhook
 
 resources:
   - namespace.yaml

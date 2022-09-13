@@ -40,6 +40,24 @@ resource "local_file" "ssh_pem" {
   file_permission = "0600"
 }
 
+resource "aws_security_group" "allow_vpc_ingress_traffic" {
+  name        = "allow_ingress_from_vpc"
+  description = "Allow inbound traffic"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    description = "Traffic from VPC"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.vpc_cidr]
+  }
+
+  tags = {
+    Name = "allow_ingress_from_vpc"
+  }
+}
+
 #
 # Server
 #
@@ -73,9 +91,10 @@ EOT
 module "agents" {
   source = "../vendor/rke2/modules/agent-nodepool"
 
-  name    = "generic"
-  vpc_id  = var.vpc_id
-  subnets = var.subnet_ids # Note: Public subnets used for demo purposes, this is not recommended in production
+  name                     = "generic"
+  vpc_id                   = var.vpc_id
+  subnets                  = var.subnet_ids # Note: Public subnets used for demo purposes, this is not recommended in production
+  extra_security_group_ids = [aws_security_group.allow_vpc_ingress_traffic.id]
 
   # ami                 = data.aws_ami.rhel8.image_id # Note: Multi OS is primarily for example purposes
   ami                 = "ami-03c6d7cb5202ae868"
