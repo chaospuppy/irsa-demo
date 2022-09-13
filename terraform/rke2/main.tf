@@ -46,10 +46,11 @@ resource "local_file" "ssh_pem" {
 module "rke2" {
   source = "../vendor/rke2"
 
-  cluster_name        = var.cluster_name
-  vpc_id              = var.vpc_id
-  subnets             = var.subnet_ids
-  ami                 = data.aws_ami.rhel8.image_id
+  cluster_name = var.cluster_name
+  vpc_id       = var.vpc_id
+  subnets      = var.subnet_ids
+  # ami                 = data.aws_ami.rhel8.image_id
+  ami                 = "ami-03c6d7cb5202ae868"
   ssh_authorized_keys = [tls_private_key.ssh.public_key_openssh]
   instance_type       = "t3a.medium"
   servers             = 1
@@ -76,7 +77,8 @@ module "agents" {
   vpc_id  = var.vpc_id
   subnets = var.subnet_ids # Note: Public subnets used for demo purposes, this is not recommended in production
 
-  ami                 = data.aws_ami.rhel8.image_id # Note: Multi OS is primarily for example purposes
+  # ami                 = data.aws_ami.rhel8.image_id # Note: Multi OS is primarily for example purposes
+  ami                 = "ami-03c6d7cb5202ae868"
   ssh_authorized_keys = [tls_private_key.ssh.public_key_openssh]
   spot                = true
   asg                 = { min : 1, max : 1, desired : 1 }

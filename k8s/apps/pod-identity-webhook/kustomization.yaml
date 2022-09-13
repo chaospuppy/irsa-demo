@@ -1,0 +1,9 @@
+namespace: cert-manager
+
+resources:
+  - namespace.yaml
+  - rbac.yaml
+  - deployment.yaml
+  - certificates.yaml
+  - service.yaml
+  - mutatingwebhook.yaml

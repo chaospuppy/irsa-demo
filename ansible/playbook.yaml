@@ -1,0 +1,15 @@
+---
+
+- hosts: control-plane
+  gather_facts: no
+  become: yes
+  roles:
+    - role: oidc
+  vars_prompt:
+    - name: oidc_bucket_name
+      prompt: "Enter OIDC provider bucket name for this cluster"
+      private: no
+
+  vars:
+    k8s_version: "v1.22.11"
+  serial: 1

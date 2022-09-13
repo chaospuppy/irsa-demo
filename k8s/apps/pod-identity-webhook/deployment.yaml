@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-identity-webhook
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pod-identity-webhook
+  template:
+    metadata:
+      labels:
+        app: pod-identity-webhook
+    spec:
+      serviceAccountName: pod-identity-webhook
+      containers:
+      - name: pod-identity-webhook
+        image: docker.io/amazon/amazon-eks-pod-identity-webhook:v0.4.0
+        imagePullPolicy: Always
+        command:
+        - /webhook
+        - --in-cluster=false
+        - --namespace=pod-identity-webhook
+        - --service-name=pod-identity-webhook
+        - --annotation-prefix=aws-pod-identity.irsa.demo
+        - --token-audience=irsa.demo
+        - --logtostderr
+        - --aws-default-region=us-gov-west-1
+        - --sts-regional-endpoint=true
+        volumeMounts:
+        - name: cert
+          mountPath: "/etc/webhook/certs"
+          readOnly: true
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 200m
+          limits:
+            memory: 512Mi
+            cpu: 200m
+      volumes:
+      - name: cert
+        secret:
+          secretName: pod-identity-webhook-cert

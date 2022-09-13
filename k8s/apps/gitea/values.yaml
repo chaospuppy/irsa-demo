@@ -13,7 +13,7 @@ global:
   ##   - myRegistryKeySecretName
   ##
   imagePullSecrets: []
-  storageClass: ""
+  storageClass:
 
 ## @param replicaCount number of replicas for the statefulset
 replicaCount: 1
@@ -422,6 +422,7 @@ postgresql:
       servicePort: 5432
   persistence:
     size: 10Gi
+    storageClass: "gp2"
 
 ## @section MySQL
 #

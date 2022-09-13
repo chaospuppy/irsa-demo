@@ -1,0 +1,36 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: kubernetes-root-issuer
+  namespace: cert-manager
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kubernetes-intermediate-ca
+  namespace: cert-manager
+spec:
+  commonName: cert-manager
+  duration: 87600h0m0s
+  isCA: true
+  issuerRef:
+    kind: Issuer
+    name: kubernetes-root-issuer
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  secretName: kubernetes-intermediate-ca
+  usages:
+  - digital signature
+  - key encipherment
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: kubernetes-ca
+spec:
+  ca:
+    secretName: kubernetes-intermediate-ca

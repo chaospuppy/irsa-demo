@@ -1,0 +1,8 @@
+kube-apiserver-arg:
+  - "service-account-issuer=https://s3-us-gov-west-1.amazonaws.com/{{ oidc_bucket_name }}"
+  - "service-account-issuer=https://kubernetes.default.svc.cluster.local"
+  - "api-audiences=irsa.demo,https://kubernetes.default.svc.cluster.local,rke2"
+  - "service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.key"
+  - "service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key"
+  - "service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/irsa-sa-signer.key"
+  - "service-account-key-file=/var/lib/rancher/rke2/server/tls/irsa-sa-signer.pub"

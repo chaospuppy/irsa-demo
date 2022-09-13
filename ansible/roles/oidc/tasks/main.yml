@@ -1,0 +1,44 @@
+---
+# Main tasks file for OIDC configuration
+
+- name: Create patches directory if it does not exist
+  file:
+    path: /etc/kubernetes/patches
+    state: directory
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Add control plane patches
+  template:
+    src: templates/kube-apiserver.yaml.j2
+    dest: /etc/kubernetes/patches/kube-apiserver.yaml
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Concat rancher configuration
+  shell:
+    cmd: "cat /etc/kubernetes/patches/kube-apiserver.yaml >> /etc/rancher/rke2/config.yaml"
+    creates: /root/.oidc-patched
+
+- name: Add signing key
+  copy:
+    src: files/keys/sa-signer.key
+    dest: /var/lib/rancher/rke2/server/tls/irsa-sa-signer.key
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Add public key
+  copy:
+    src: files/keys/sa-signer-pkcs8.pub
+    dest: /var/lib/rancher/rke2/server/tls/irsa-sa-signer.pub
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Start RKE2 upgrade to apply changes
+  ansible.builtin.service:
+    name: rke2-server
+    state: restarted

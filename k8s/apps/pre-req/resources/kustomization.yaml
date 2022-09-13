@@ -1,0 +1,5 @@
+resources:
+  - cert-manager.yaml
+  - gitea.yaml
+  - velero.yaml
+  - storageclass.yaml
