@@ -6,12 +6,12 @@ all:
 
 control-plane:
   hosts:
-    172.23.20.156:
+    172.23.20.166:
       ansible_host:
       node_pool: control-plane
 
 node:
   hosts:
-    172.23.10.36:
+    172.23.10.135:
       ansible_host:
       node_pool: worker
