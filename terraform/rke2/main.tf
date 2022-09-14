@@ -101,7 +101,7 @@ module "agents" {
   ssh_authorized_keys = [tls_private_key.ssh.public_key_openssh]
   spot                = true
   asg                 = { min : 1, max : 1, desired : 1 }
-  instance_type       = "t3a.medium"
+  instance_type       = "t3a.xlarge"
 
   # Enable AWS Cloud Controller Manager and Cluster Autoscaler
   enable_ccm        = true
