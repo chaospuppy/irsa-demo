@@ -30,3 +30,15 @@ variable "vpc_cidr" {
   description = "CIDR block of VPC"
   default     = "172.23.0.0/16"
 }
+
+variable "post_userdata" {
+  type        = string
+  description = "extra post-bootstrap userdata"
+  default     = ""
+}
+
+variable "disable_selinux" {
+  type        = bool
+  description = "toggles disabling selinux (required if using istio on certain versions of RKE2)"
+  default     = false
+}

@@ -1,3 +1,7 @@
+locals {
+  selinux_disable_post_userdata = var.disable_selinux ? "sudo sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config; sudo setenforce 0" : ""
+}
+
 data "aws_ami" "rhel7" {
   most_recent = true
   owners      = ["219670896067"] # owner is specific to aws gov cloud
@@ -112,6 +116,8 @@ node-label:
   - "name=generic"
   - "os=rhel8"
 EOT
+
+  post_userdata = "${var.post_userdata};${local.selinux_disable_post_userdata}"
 
   cluster_data = module.rke2.cluster_data
 
